@@ -8,15 +8,15 @@ public abstract class Producto {
 
     private int cantidadStock;
 
-    public String getCodigo() {
-        return codigo;
-    }
-
     public Producto(String codigo, String nombre, double precio, int cantidadStock) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.precio = precio;
         this.cantidadStock = cantidadStock;
+    }
+
+    public String getCodigo() {
+        return codigo;
     }
 
     public void setCodigo(String codigo) {
@@ -45,6 +45,13 @@ public abstract class Producto {
 
     public void setCantidadStock(int cantidadStock) {
         this.cantidadStock = cantidadStock;
+    }
+
+    public void vender(int cantidad) {
+        if (cantidad <= cantidadStock) {
+            throw new IllegalArgumentException("No se encuentra disponible la cantidad requerida");
+        }
+        System.out.println("Procesando ...");
     }
 
 }
