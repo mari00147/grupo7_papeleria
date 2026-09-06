@@ -12,6 +12,13 @@ public abstract class Producto {
         return codigo;
     }
 
+    public Producto(String codigo, String nombre, double precio, int cantidadStock) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.cantidadStock = cantidadStock;
+    }
+
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
