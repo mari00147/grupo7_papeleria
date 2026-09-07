@@ -1,9 +1,11 @@
+package model.domain;
+
 public class ProductoEscolar extends Producto {
     private String nivelEscolar;
 
-    public ProductoEscolar(String nivelEscolar) {
-    super(null, null, 0.0, 0);
-    this.nivelEscolar = nivelEscolar;
+    public ProductoEscolar(String codigo, String nombre, double precio, int cantidadStock, String nivelEscolar) {
+        super(codigo, nombre, precio, cantidadStock);
+        this.nivelEscolar = nivelEscolar;
     }
 
     public String getNivelEscolar() {
@@ -13,13 +15,12 @@ public class ProductoEscolar extends Producto {
     public void setNivelEscolar(String nivelEscolar) {
         this.nivelEscolar = nivelEscolar;
     }
-    
+
     @Override
     public double calcularPrecioFinal() {
-        if (this.nivelEscolar != null && this.nivelEscolar.equalsIgnoreCase("primaria")) {
+        if (nivelEscolar != null && nivelEscolar.equalsIgnoreCase("primaria")) {
             return getPrecio() * 0.90;
         }
         return getPrecio();
     }
 }
-
