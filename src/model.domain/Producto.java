@@ -48,9 +48,18 @@ public abstract class Producto {
     }
 
     public void vender(int cantidad) {
-        if (cantidad <= cantidadStock) {
-            throw new IllegalArgumentException("No se encuentra disponible la cantidad requerida");
+
+        if (cantidad <= 0) {
+            throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
         }
+
+        if (cantidad > cantidadStock) {
+            throw new IllegalArgumentException(
+                    "No se encuentra disponible la cantidad requerida");
+        }
+
+        cantidadStock -= cantidad;
+
         System.out.println("Procesando ...");
     }
 
