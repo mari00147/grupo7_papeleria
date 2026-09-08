@@ -1,5 +1,4 @@
 
-
 public class ProductoEscolar extends Producto {
     private String nivelEscolar;
 
@@ -16,7 +15,6 @@ public class ProductoEscolar extends Producto {
         this.nivelEscolar = nivelEscolar;
     }
 
-    @Override
     public double calcularPrecioFinal() {
         if (nivelEscolar != null && nivelEscolar.equalsIgnoreCase("primaria")) {
             return getPrecio() * 0.90;
