@@ -1,4 +1,4 @@
-
+package model.domain;
 public class Proveedor {
 
     private String nombre;

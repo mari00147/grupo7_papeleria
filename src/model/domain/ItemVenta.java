@@ -1,4 +1,4 @@
-
+package model.domain;
 public class ItemVenta {
 
     private Producto producto;

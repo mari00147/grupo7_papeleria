@@ -1,5 +1,7 @@
+package model.domain;
+
 public interface Vendible{
 
-    double calcularPrecioFinal;
+    double calcularPrecioFinal();
     void vender(int cantidad);
 }
