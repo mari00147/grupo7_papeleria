@@ -1,3 +1,5 @@
+package model.domain;
+
 public abstract class Producto {
 
     private String codigo;

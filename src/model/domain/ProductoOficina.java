@@ -1,3 +1,5 @@
+package model.domain;
+
 
 public class ProductoOficina extends Producto {
     private String categoria;
