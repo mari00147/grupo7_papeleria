@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("   PAPELERÍA - DEMOSTRACIÓN   ");
+        System.out.println("   Papelería / Demostración   ");
 
 
         ProductoOficina resma = new ProductoOficina("OF-101", "Resma de Papel Carta", 20000.0, 50, "Papelería general");
