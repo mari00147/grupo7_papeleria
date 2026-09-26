@@ -1,4 +1,5 @@
 package model.domain;
+
 public class Proveedor {
 
     private String nombre;
@@ -6,10 +7,25 @@ public class Proveedor {
     private String categoriaProductos;
 
     public Proveedor(String categoriaProductos, String nombre, String telefono) {
+
+        if (categoriaProductos == null || categoriaProductos.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La categoría de productos no puede estar vacía");
+        }
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El nombre del proveedor no puede estar vacío");
+        }
+
+        if (telefono == null || telefono.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El teléfono no puede estar vacío");
+        }
+
         this.categoriaProductos = categoriaProductos;
         this.nombre = nombre;
         this.telefono = telefono;
-
     }
 
     public String getNombre() {
@@ -35,5 +51,4 @@ public class Proveedor {
     public void setCategoriaProductos(String categoriaProductos) {
         this.categoriaProductos = categoriaProductos;
     }
-
 }
