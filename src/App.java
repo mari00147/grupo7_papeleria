@@ -48,7 +48,7 @@ public class App {
 
         System.out.println("\n--- 4. RELACIÓN PROVEEDOR Y PEDIDOS (1 a 0..*) ---");
 
-        Proveedor proveedorNorma = new Proveedor("Distribuidora Norma", "601-555-0199", "Escolar y Oficina");
+        Proveedor proveedorNorma = new Proveedor("Escolar y Oficina", "Distribuidora Norma", "601-555-0199");
 
         Pedido pedido1 = new Pedido(LocalDate.now(), "Registrado", proveedorNorma);
         Pedido pedido2 = new Pedido(LocalDate.now().plusDays(3), "Pendiente", proveedorNorma);
