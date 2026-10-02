@@ -28,6 +28,19 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     }
 
     // =========================
+    // RECORRER / LISTAR
+    // =========================
+
+    public void listar() {
+        Nodo<T> actual = head;
+
+        while (actual != null) {
+            System.out.println(actual.getDato());
+            actual = actual.getSiguiente();
+        }
+    }
+
+    // =========================
     // INSERCIÓN
     // =========================
 
@@ -60,8 +73,7 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     public void insertarEnPosicion(int indice, T dato) {
         if (indice < 0 || indice > tamano) {
             throw new IndexOutOfBoundsException(
-                    "Indice fuera de rango: " + indice
-            );
+                    "Indice fuera de rango: " + indice);
         }
 
         if (indice == 0) {
@@ -101,8 +113,7 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     public T buscarPorIndice(int indice) {
         if (indice < 0 || indice >= tamano) {
             throw new IndexOutOfBoundsException(
-                    "Indice fuera de rango: " + indice
-            );
+                    "Indice fuera de rango: " + indice);
         }
 
         Nodo<T> actual = head;
@@ -137,8 +148,7 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     public void actualizar(int indice, T dato) {
         if (indice < 0 || indice >= tamano) {
             throw new IndexOutOfBoundsException(
-                    "Indice fuera de rango: " + indice
-            );
+                    "Indice fuera de rango: " + indice);
         }
 
         Nodo<T> actual = head;
