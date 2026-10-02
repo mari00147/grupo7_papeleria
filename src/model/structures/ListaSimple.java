@@ -18,7 +18,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         return tamano;
     }
 
-    // Permite obtener el tamaño utilizando size()
     public int size() {
         return tamano;
     }
@@ -26,10 +25,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
     public Nodo<T> getHead() {
         return head;
     }
-
-    // =========================
-    // RECORRER / LISTAR
-    // =========================
 
     public void listar() {
         Nodo<T> actual = head;
@@ -39,10 +34,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
             actual = actual.getSiguiente();
         }
     }
-
-    // =========================
-    // INSERCIÓN
-    // =========================
 
     public void insertarInicio(T dato) {
         Nodo<T> nuevo = new Nodo<>(dato);
@@ -105,10 +96,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         insertarEnPosicion(indice, dato);
     }
 
-    // =========================
-    // BÚSQUEDA
-    // =========================
-
     @Override
     public T buscarPorIndice(int indice) {
         if (indice < 0 || indice >= tamano) {
@@ -140,10 +127,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
         return null;
     }
 
-    // =========================
-    // ACTUALIZACIÓN
-    // =========================
-
     @Override
     public void actualizar(int indice, T dato) {
         if (indice < 0 || indice >= tamano) {
@@ -159,10 +142,6 @@ public class ListaSimple<T> implements OperacionesEstructuras<T> {
 
         actual.setDato(dato);
     }
-
-    // =========================
-    // ELIMINACIÓN
-    // =========================
 
     public boolean eliminarAlInicio() {
         if (estaVacia()) {
