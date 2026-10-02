@@ -1,24 +1,24 @@
 package model.domain;
-import java.util.ArrayList;
-import java.util.List;
+
+import model.structures.ListaSimple;
 
 public class Venta {
 
-    private List<ItemVenta> items;
+    private ListaSimple<ItemVenta> items;
 
     public Venta() {
-        items = new ArrayList<>();
+        items = new ListaSimple<>();
     }
 
-    public List<ItemVenta> getItems() {
+    public ListaSimple<ItemVenta> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemVenta> items) {
-        this.items = items;
-    }
-
     public void agregarItem(ItemVenta item) {
-        items.add(item);
+        if (item == null) {
+            throw new IllegalArgumentException("El item no puede ser nulo");
+        }
+
+        items.insertarFinal(item);
     }
 }

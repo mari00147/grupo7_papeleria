@@ -12,26 +12,45 @@ public class PruebaCreacionObjetos {
                 "lapiz",
                 1500,
                 100,
-                "escritura");
+                "escritura"
+        );
 
         ProductoEscolar escolar = new ProductoEscolar(
                 "002",
                 "Cuaderno",
                 5000,
                 100,
-                "primaria");
+                "primaria"
+        );
 
-        System.out.println("Precio final oficina: " + oficina.calcularPrecioFinal());
-        System.out.println("Precio final escolar: " + escolar.calcularPrecioFinal());
+        System.out.println(
+                "Precio final oficina: "
+                + oficina.calcularPrecioFinal()
+        );
 
-        ItemVenta itemOficina = new ItemVenta(oficina, 2);
-        ItemVenta itemEscolar = new ItemVenta(escolar, 3);
+        System.out.println(
+                "Precio final escolar: "
+                + escolar.calcularPrecioFinal()
+        );
+
+        ItemVenta itemOficina = new ItemVenta(
+                oficina,
+                2
+        );
+
+        ItemVenta itemEscolar = new ItemVenta(
+                escolar,
+                3
+        );
 
         Venta venta = new Venta();
 
         venta.agregarItem(itemOficina);
         venta.agregarItem(itemEscolar);
 
-        System.out.println("Cantidad de items en la venta: " + venta.getItems().size());
+        System.out.println(
+                "Cantidad de items en la venta: "
+                + venta.getItems().size()
+        );
     }
 }
