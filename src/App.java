@@ -1,5 +1,9 @@
 import model.domain.*;
 import java.time.LocalDate;
+import model.services.VentaService;
+import view.MenuPilaView;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -77,5 +81,21 @@ public class App {
         }
 
         System.out.println("      TODAS LAS PRUEBAS EJECUTADAS CON ÉXITO     ");
+
+        //pilas
+        System.out.println("\n--- 6. DEMOSTRACIÓN DE VENTAS (PILAS) ---");
+
+        List<Producto> productos = new ArrayList<>();
+        productos.add(resma);
+        productos.add(cuadernoPrimaria);
+        productos.add(cuadernoSecundaria);
+
+        VentaService ventaService = new VentaService(productos);
+        MenuPilaView menuPila = new MenuPilaView(ventaService);
+        menuPila.iniciar();
+
+        System.out.println("Stock final resma: " + resma.getCantidadStock());
+        System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
+        System.out.println("Stock final cuaderno secundaria: " + cuadernoSecundaria.getCantidadStock());
     }
 }
