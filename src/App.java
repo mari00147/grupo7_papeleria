@@ -1,6 +1,6 @@
 import model.domain.*;
 import java.time.LocalDate;
-import model.services.VentaService;
+import service.VentaService;
 import view.MenuPilaView;
 import java.util.ArrayList;
 import java.util.List;
