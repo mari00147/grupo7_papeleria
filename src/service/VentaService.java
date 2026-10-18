@@ -129,5 +129,18 @@ public class VentaService {
         return pendientes.getFila().size();
     }
 
-   
+    public String listarPedidosPendientes() {
+        Cola<Pedido> fila = pendientes.getFila();
+        if (fila.isEmpty()) {
+            return "No hay pedidos pendientes";
+        }
+        StringBuilder sb = new StringBuilder();
+        int total = fila.size(); 
+        for (int i = 1; i <= total; i++) {
+            Pedido pedido = fila.dequeue();
+            sb.append(i).append(". ").append(pedido).append("\n");
+            fila.enqueue(pedido);
+        }
+        return sb.toString();
+}
 }
