@@ -3,7 +3,8 @@ package model.domain;
 import java.time.LocalDate;
 
 public class Pedido {
-
+    private static int contador=0;
+    private final int id;
     private LocalDate fecha;
     private String estado;
     private Proveedor proveedor;
@@ -22,10 +23,15 @@ public class Pedido {
         if (proveedor == null) {
             throw new IllegalArgumentException("El proveedor no puede ser nulo");
         }
-
+        
+        this.id= ++contador;
         this.fecha = fecha;
         this.estado = estado;
         this.proveedor = proveedor;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public LocalDate getFecha() {
