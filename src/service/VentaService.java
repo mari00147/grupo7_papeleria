@@ -6,17 +6,25 @@ import model.domain.ItemVenta;
 import model.domain.Producto;
 import model.domain.Venta;
 import model.structures.Pila;
-
+import model.domain.Pedido;
+import model.domain.PedidosPendientes;
+import model.structures.Cola;
 public class VentaService {
 
     private final List<Producto> productos;
     private final Pila<Venta> ventasRecientes;
+    private final List<Pedido> pedidos;
+    private final PedidosPendientes pendientes = new PedidosPendientes("Pedidos a proveedor");
 
-    public VentaService(List<Producto> productos) {
+
+    public VentaService(List<Producto> productos, List<Pedido> pedidos) {
         this.productos = productos;
         this.ventasRecientes = new Pila<>();
+        this.pedidos = pedidos;
+        
     }  
     
+    // pilas
     private Producto buscarProductoOFallar(String codigo) {
         for (Producto p : productos) {
             if (p.getCodigo().equals(codigo)) {
@@ -88,6 +96,38 @@ public class VentaService {
         return texto.toString();
     }
 
+  //colas
+    
+    private Pedido buscarPedidoOFallar(int id) {
+        for (Pedido p : pedidos) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("No existe un pedido con id " + id);
+    }
 
+    public void registrarPedidoPendiente(int id) {
+        Pedido pedido = buscarPedidoOFallar(id); 
+        pendientes.getFila().enqueue(pedido);
+    }
 
+    public Pedido procesarSiguientePedido() {
+        
+        return pendientes.getFila().dequeue();
+    }
+
+    public Pedido consultarSiguientePedido() {
+        return pendientes.getFila().front();
+    }
+
+    public boolean sinPedidosPendientes() {
+        return pendientes.getFila().isEmpty();
+    }
+
+    public int contarPendientes() {
+        return pendientes.getFila().size();
+    }
+
+   
 }

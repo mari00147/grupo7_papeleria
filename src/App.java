@@ -1,6 +1,7 @@
 import model.domain.*;
 import java.time.LocalDate;
 import service.VentaService;
+import view.MenuColaView;
 import view.MenuPilaView;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,5 +98,19 @@ public class App {
         System.out.println("Stock final resma: " + resma.getCantidadStock());
         System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
         System.out.println("Stock final cuaderno secundaria: " + cuadernoSecundaria.getCantidadStock());
+
+        //colas
+
+        System.out.println("\n--- 7. DEMOSTRACIÓN DE PEDIDOS PENDIENTES (COLAS) ---");
+        MenuColaView menuCola = new MenuColaView(ventaService); // el MISMO ventaService
+        menuCola.iniciar();
+
+        System.out.println("Stock final resma: " + resma.getCantidadStock());
+        System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
+        System.out.println("Stock final cuaderno secundaria: " + cuadernoSecundaria.getCantidadStock());
+
     }
+
+
+   
 }
