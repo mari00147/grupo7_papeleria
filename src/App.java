@@ -1,8 +1,8 @@
 import model.domain.*;
 import java.time.LocalDate;
 import service.VentaService;
-import view.MenuColaView;
 import view.MenuPilaView;
+import view.MenuColaView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class App {
 
         System.out.println("      TODAS LAS PRUEBAS EJECUTADAS CON ÉXITO     ");
 
-        //pilas
+        // pilas
         System.out.println("\n--- 6. DEMOSTRACIÓN DE VENTAS (PILAS) ---");
 
         List<Producto> productos = new ArrayList<>();
@@ -91,26 +91,25 @@ public class App {
         productos.add(cuadernoPrimaria);
         productos.add(cuadernoSecundaria);
 
-        VentaService ventaService = new VentaService(productos);
+        
+        Pedido pedido3 = new Pedido(LocalDate.now().plusDays(5), "Pendiente", proveedorNorma);
+
+        List<Pedido> pedidos = new ArrayList<>();
+        pedidos.add(pedido1);
+        pedidos.add(pedido2);
+        pedidos.add(pedido3);
+
+        VentaService ventaService = new VentaService(productos, pedidos);
         MenuPilaView menuPila = new MenuPilaView(ventaService);
         menuPila.iniciar();
 
-        System.out.println("Stock final resma: " + resma.getCantidadStock());
-        System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
-        System.out.println("Stock final cuaderno secundaria: " + cuadernoSecundaria.getCantidadStock());
-
         //colas
-
         System.out.println("\n--- 7. DEMOSTRACIÓN DE PEDIDOS PENDIENTES (COLAS) ---");
-        MenuColaView menuCola = new MenuColaView(ventaService); // el MISMO ventaService
+        MenuColaView menuCola = new MenuColaView(ventaService);
         menuCola.iniciar();
 
         System.out.println("Stock final resma: " + resma.getCantidadStock());
         System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
         System.out.println("Stock final cuaderno secundaria: " + cuadernoSecundaria.getCantidadStock());
-
     }
-
-
-   
 }
