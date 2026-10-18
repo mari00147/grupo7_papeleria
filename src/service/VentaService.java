@@ -129,9 +129,6 @@ public class VentaService {
         return pendientes.getFila().size();
     }
 
-<<<<<<< HEAD
-   
-=======
     public String listarPedidosPendientes() {
         Cola<Pedido> fila = pendientes.getFila();
         if (fila.isEmpty()) {
@@ -146,5 +143,4 @@ public class VentaService {
         }
         return sb.toString();
 }
->>>>>>> 62635f93555ecabadccde996c0b830d0b633688a
 }
