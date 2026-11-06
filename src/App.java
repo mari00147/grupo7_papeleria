@@ -1,6 +1,16 @@
 import model.domain.*;
+import model.domain.ItemVenta;
+import model.domain.Pedido;
+import model.domain.Producto;
+import model.domain.ProductoEscolar;
+import model.domain.ProductoOficina;
+import model.domain.Proveedor;
+import model.domain.Venta;
+
 import java.time.LocalDate;
+import service.CatalogoService; 
 import service.VentaService;
+import view.MenuCatalogoView; 
 import view.MenuPilaView;
 import view.MenuColaView;
 import java.util.ArrayList;
@@ -67,12 +77,13 @@ public class App {
         System.out.println("\n--- 5. VALIDACIÓN DE EXCEPCIONES ---");
 
         try {
-            System.out.println("Intentando vender 100 cuadernos (Stock disponible: "
-                    + cuadernoPrimaria.getCantidadStock() + ")...");
-            cuadernoPrimaria.vender(100);
-        } catch (IllegalStateException e) {
-            System.out.println("-> Excepción capturada (Stock insuficiente): " + e.getMessage());
-        }
+         System.out.println("Intentando vender 100 cuadernos (Stock disponible: "
+            + cuadernoPrimaria.getCantidadStock() + ")...");
+             cuadernoPrimaria.vender(100);
+}             catch (IllegalArgumentException e) { // antes: IllegalStateException
+          System.out.println("-> Excepción capturada (Stock insuficiente): " + e.getMessage());
+}
+        
 
         try {
             System.out.println("Intentando crear un producto con precio negativo (-1500)...");
@@ -87,9 +98,6 @@ public class App {
         System.out.println("\n--- 6. DEMOSTRACIÓN DE VENTAS (PILAS) ---");
 
         List<Producto> productos = new ArrayList<>();
-        productos.add(resma);
-        productos.add(cuadernoPrimaria);
-        productos.add(cuadernoSecundaria);
 
         
         Pedido pedido3 = new Pedido(LocalDate.now().plusDays(5), "Pendiente", proveedorNorma);
@@ -99,7 +107,13 @@ public class App {
         pedidos.add(pedido2);
         pedidos.add(pedido3);
 
-        VentaService ventaService = new VentaService(productos, pedidos);
+        VentaService ventaService = new VentaService(productos, pedidos); 
+        if (productos.isEmpty()) { 
+            productos.add(resma);
+            productos.add(cuadernoPrimaria);
+            productos.add(cuadernoSecundaria);
+        }
+        CatalogoService catalogoService = new CatalogoService(ventaService); 
         MenuPilaView menuPila = new MenuPilaView(ventaService);
         menuPila.iniciar();
 
@@ -107,6 +121,12 @@ public class App {
         System.out.println("\n--- 7. DEMOSTRACIÓN DE PEDIDOS PENDIENTES (COLAS) ---");
         MenuColaView menuCola = new MenuColaView(ventaService);
         menuCola.iniciar();
+
+        // lista doble
+        System.out.println("\n--- 8. CATÁLOGO NAVEGABLE (LISTA DOBLE) ---");
+        MenuCatalogoView menuCatalogo = new MenuCatalogoView(catalogoService);
+        menuCatalogo.iniciar();
+        System.out.println(ventaService.guardarInventario());
 
         System.out.println("Stock final resma: " + resma.getCantidadStock());
         System.out.println("Stock final cuaderno primaria: " + cuadernoPrimaria.getCantidadStock());
