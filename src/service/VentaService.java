@@ -1,5 +1,12 @@
 package service;
 
+import java.io.BufferedReader;      
+import java.io.BufferedWriter;      
+import java.io.File;                
+import java.io.FileNotFoundException; 
+import java.io.FileReader;          
+import java.io.FileWriter;          
+import java.io.IOException; 
 import java.util.List;
 
 import model.domain.ItemVenta;
@@ -9,7 +16,12 @@ import model.structures.Pila;
 import model.domain.Pedido;
 import model.domain.PedidosPendientes;
 import model.structures.Cola;
+import model.domain.ProductoEscolar;
+import model.domain.ProductoOficina;
 public class VentaService {
+
+    private static final String  ARCHIVO_INVENTARIO = "data/inventario.txt";
+    private static final String SEPARADOR = ";";
 
     private final List<Producto> productos;
     private final Pila<Venta> ventasRecientes;
@@ -143,4 +155,83 @@ public class VentaService {
         }
         return sb.toString();
 }
+//archivos 
+
+    public Producto buscarProducto(String codigo) {
+        for (Producto p : productos) {
+            if (p.getCodigo().equals(codigo)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private String tipoDe(Producto p) {
+        if (p instanceof ProductoOficina) return "OFICINA";
+        if (p instanceof ProductoEscolar) return "ESCOLAR";
+        return "OTRO";
+    }
+     private String datoDe(Producto p) {
+        if (p instanceof ProductoOficina o) return o.getCategoria();
+        if (p instanceof ProductoEscolar e) return e.getNivelEscolar();
+        return "";
+    }
+
+    private void escribirInventario() throws IOException {
+        File carpeta = new File(ARCHIVO_INVENTARIO).getParentFile();
+        if (carpeta != null) {
+            carpeta.mkdirs();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Producto p : productos) {
+            sb.append(String.join(SEPARADOR, tipoDe(p), p.getCodigo(), p.getNombre(),
+                    String.valueOf(p.getPrecio()), String.valueOf(p.getCantidadStock()), datoDe(p)))
+              .append("\n");
+        }
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_INVENTARIO))) {
+            escritor.write(sb.toString());
+        }
+    }
+
+    public String guardarInventario() {
+        try {
+            escribirInventario();
+            return "Se guardaron " + productos.size() + " productos en " + ARCHIVO_INVENTARIO;
+        } catch (IOException e) {
+            return "No se pudo guardar: " + e.getMessage();
+        }
+    }
+
+    public String cargarInventario() {
+        File archivo = new File(ARCHIVO_INVENTARIO);
+        productos.clear();   // cargar reemplaza el contenido: no duplica
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] c = linea.split(SEPARADOR, -1);
+                if (c.length != 6) {
+                    continue;
+                }
+                try {
+                    double precio = Double.parseDouble(c[3]);
+                    int stock = Integer.parseInt(c[4]);
+                    Producto p;
+                    switch (c[0]) {
+                        case "OFICINA" -> p = new ProductoOficina(c[1], c[2], precio, stock, c[5]);
+                        case "ESCOLAR" -> p = new ProductoEscolar(c[1], c[2], precio, stock, c[5]);
+                        default -> { continue; }   // tipo desconocido: se omite la línea
+                    }
+                    productos.add(p);
+                } catch (IllegalArgumentException e) {
+                    // número mal escrito (NumberFormatException) o dato inválido: se omite la línea
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return "No existe " + ARCHIVO_INVENTARIO + "; se inicia con el inventario vacío";
+        } catch (IOException e) {
+            return "No se pudo leer: " + e.getMessage();
+        }
+        return "Se cargaron " + productos.size() + " productos";
+    }
 }
