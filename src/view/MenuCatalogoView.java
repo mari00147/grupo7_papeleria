@@ -17,8 +17,8 @@ public class MenuCatalogoView {
             opcion = ConsoleUtils.leerEntero("Elija una opción: ");
             switch (opcion) {
                 case 1 -> registrar();
-                case 2 -> System.out.println(catalogoService.listarCatalogoAdelante());
-                case 3 -> System.out.println(catalogoService.listarCatalogoAtras());
+                case 2 -> System.out.println(catalogoService.listarCatalogoEnOrden());
+                case 3 -> System.out.println(catalogoService.listarCatalogoEnOrdenInverso());
                 case 4 -> verAnterior();
                 case 5 -> verSiguiente();
                 case 6 -> retirar();
@@ -42,17 +42,17 @@ public class MenuCatalogoView {
     }
 
     private void registrar() {
-        String codigo = ConsoleUtils.leerTexto("Código del producto (debe estar en el inventario): ").trim();
+        String codigo = ConsoleUtils.leerTexto("Código del producto del inventario: ").trim();
         if (!catalogoService.existeEnInventario(codigo)) {
-            System.out.println("Ese código no existe en el inventario");
+            System.out.println("No existe un producto con código " + codigo);
             return;
         }
-        catalogoService.registrarProducto(codigo);
+        catalogoService.registrarEnCatalogo(codigo);
         System.out.println("Producto agregado al catálogo");
     }
 
     private void verAnterior() {
-        if (catalogoService.contarProductos() == 0) {
+        if (!catalogoService.hayProductos()) {
             System.out.println("No hay productos en el catálogo");
             return;
         }
@@ -60,11 +60,11 @@ public class MenuCatalogoView {
             System.out.println("No hay producto anterior");
             return;
         }
-        System.out.println("Anterior: " + catalogoService.verProductoAnterior());
+        System.out.println("Estás viendo: " + catalogoService.verProductoAnterior());
     }
 
     private void verSiguiente() {
-        if (catalogoService.contarProductos() == 0) {
+        if (!catalogoService.hayProductos()) {
             System.out.println("No hay productos en el catálogo");
             return;
         }
@@ -72,15 +72,15 @@ public class MenuCatalogoView {
             System.out.println("No hay producto siguiente");
             return;
         }
-        System.out.println("Siguiente: " + catalogoService.verProductoSiguiente());
+        System.out.println("Estás viendo: " + catalogoService.verProductoSiguiente());
     }
 
     private void retirar() {
         if (!catalogoService.hayProductoSeleccionado()) {
-            System.out.println("Primero hojee un producto para seleccionarlo");
+            System.out.println("No hay producto seleccionado: hojee uno primero (opción 4 o 5)");
             return;
         }
-        System.out.println("Retirado del catálogo: " + catalogoService.retirarDelCatalogo());
+        System.out.println("Retirado del catálogo: " + catalogoService.retirarProducto());
     }
 
     private void guardarTodo() {
