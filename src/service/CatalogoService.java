@@ -20,7 +20,6 @@ public class CatalogoService {
     private final CatalogoNavegable catalogo = new CatalogoNavegable("Catálogo de la papelería");
     private final VentaService ventaService;
 
-    
     public CatalogoService(VentaService ventaService) {
         this.ventaService = ventaService;
         cargarCatalogo();
@@ -60,7 +59,6 @@ public class CatalogoService {
         return catalogo.getProductos().siguiente();
     }
 
-
     public Producto retirarProducto() {
         return catalogo.getProductos().retirarActual();
     }
@@ -82,9 +80,10 @@ public class CatalogoService {
     }
 
     public boolean hayProductoSeleccionado() {
-        return catalogo.getProductos().haySeleccion();
+        return catalogo.getProductos().hayActual();
     }
 
+    //archivos: catálogo 
 
     private void escribirCatalogo() throws IOException {
         File carpeta = new File(ARCHIVO).getParentFile();
