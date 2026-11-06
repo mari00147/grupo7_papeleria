@@ -1,10 +1,5 @@
 package service;
 
-import model.domain.CatalogoNavegable;
-import model.domain.Producto;
-import model.structures.ListaDoble;
-import model.structures.NodoDoble;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,87 +8,96 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import model.domain.CatalogoNavegable;
+import model.domain.Producto;
+import model.structures.ListaDoble;
+import model.structures.NodoDoble;
+
 public class CatalogoService {
-    private static final String ARCHIVO_CATALOGO = "data/catalogo.txt";
+    private static final String ARCHIVO = "data/catalogo.txt";
     private static final String SEPARADOR = ";";
 
-    // Un solo catálogo por Service
     private final CatalogoNavegable catalogo = new CatalogoNavegable("Catálogo de la papelería");
     private final VentaService ventaService;
 
-    // El VentaService debe crearse ANTES (ya cargó el inventario y el catálogo refiere productos por código)
+    
     public CatalogoService(VentaService ventaService) {
         this.ventaService = ventaService;
         cargarCatalogo();
     }
 
-    private ListaDoble<Producto> lista() {
-        return catalogo.getProductos();
-    }
-
-    // ---------- Funcionalidad ----------
-
     public boolean existeEnInventario(String codigo) {
-        return ventaService.buscarProducto(codigo) != null;
+        return ventaService.existeProducto(codigo);
     }
 
-    public void registrarProducto(String codigo) {
+    public void registrarEnCatalogo(String codigo) {
         Producto p = ventaService.buscarProducto(codigo);
         if (p == null) {
-            throw new IllegalArgumentException("El producto " + codigo + " no existe en el inventario");
+            throw new IllegalArgumentException("No existe un producto con código " + codigo);
         }
-        lista().insertarAlFinal(p);
+        catalogo.getProductos().insertarAlFinal(p);
     }
 
-    public String listarCatalogoAdelante() {
-        if (lista().isEmpty()) {
+    public String listarCatalogoEnOrden() {
+        if (catalogo.getProductos().isEmpty()) {
             return "No hay productos en el catálogo";
         }
-        return lista().recorrerAdelante();
+        return catalogo.getProductos().recorrerAdelante();
     }
 
-    public String listarCatalogoAtras() {
-        if (lista().isEmpty()) {
+    public String listarCatalogoEnOrdenInverso() {
+        if (catalogo.getProductos().isEmpty()) {
             return "No hay productos en el catálogo";
         }
-        return lista().recorrerAtras();
+        return catalogo.getProductos().recorrerAtras();
     }
 
     public Producto verProductoAnterior() {
-        return lista().anterior();
+        return catalogo.getProductos().anterior();
     }
 
     public Producto verProductoSiguiente() {
-        return lista().siguiente();
+        return catalogo.getProductos().siguiente();
     }
 
-    // Solo lo quita del catálogo; el inventario no se toca
-    public Producto retirarDelCatalogo() {
-        return lista().retirarActual();
+
+    public Producto retirarProducto() {
+        return catalogo.getProductos().retirarActual();
     }
 
     public int contarProductos() {
-        return lista().size();
+        return catalogo.getProductos().size();
     }
 
-    public boolean hayProductoAnterior() { return lista().hayAnterior(); }
-    public boolean hayProductoSiguiente() { return lista().haySiguiente(); }
-    public boolean hayProductoSeleccionado() { return lista().haySeleccionado(); }
+    public boolean hayProductos() {
+        return !catalogo.getProductos().isEmpty();
+    }
 
-    // ---------- Archivos ----------
+    public boolean hayProductoAnterior() {
+        return catalogo.getProductos().hayAnterior();
+    }
+
+    public boolean hayProductoSiguiente() {
+        return catalogo.getProductos().haySiguiente();
+    }
+
+    public boolean hayProductoSeleccionado() {
+        return catalogo.getProductos().haySeleccion();
+    }
+
 
     private void escribirCatalogo() throws IOException {
-        File carpeta = new File(ARCHIVO_CATALOGO).getParentFile();
+        File carpeta = new File(ARCHIVO).getParentFile();
         if (carpeta != null) {
             carpeta.mkdirs();
         }
+
         StringBuilder sb = new StringBuilder();
-        NodoDoble<Producto> n = lista().getHead(); // ADELANTE, de head a tail
-        while (n != null) {
+        for (NodoDoble<Producto> n = catalogo.getProductos().getHead(); n != null; n = n.getSiguiente()) {
             sb.append(n.getDato().getCodigo()).append("\n");
-            n = n.getSiguiente();
         }
-        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_CATALOGO))) {
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO))) {
             escritor.write(sb.toString());
         }
     }
@@ -101,37 +105,36 @@ public class CatalogoService {
     public String guardarCatalogo() {
         try {
             escribirCatalogo();
-            return "Se guardaron " + lista().size() + " productos en " + ARCHIVO_CATALOGO;
+            return "Se guardaron " + catalogo.getProductos().size() + " productos en " + ARCHIVO;
         } catch (IOException e) {
             return "No se pudo guardar: " + e.getMessage();
         }
     }
 
     public String cargarCatalogo() {
-        File archivo = new File(ARCHIVO_CATALOGO);
-
-        while (lista().getHead() != null) {      // cargar reemplaza, no duplica
-            lista().eliminar(lista().getHead());
+        ListaDoble<Producto> lista = catalogo.getProductos();
+        while (lista.getHead() != null) {
+            lista.eliminar(lista.getHead());
         }
 
-        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+        try (BufferedReader lector = new BufferedReader(new FileReader(new File(ARCHIVO)))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
-                String[] campos = linea.split(SEPARADOR, -1);
-                if (campos.length != 1) {
+                String[] c = linea.split(SEPARADOR);
+                if (c.length != 1 || c[0].trim().isEmpty()) {
                     continue;
                 }
-                Producto p = ventaService.buscarProducto(campos[0].trim());
+                Producto p = ventaService.buscarProducto(c[0].trim());
                 if (p == null) {
-                    continue; // código que no está en el inventario: no se puede enlazar
+                    continue; // el código ya no está en el inventario
                 }
-                lista().insertarAlFinal(p);
+                lista.insertarAlFinal(p);
             }
         } catch (FileNotFoundException e) {
-            return "No existe " + ARCHIVO_CATALOGO + "; se inicia con el catálogo vacío";
+            return "No existe " + ARCHIVO + "; se inicia con el catálogo vacío";
         } catch (IOException e) {
             return "No se pudo leer: " + e.getMessage();
         }
-        return "Se cargaron " + lista().size() + " productos";
+        return "Se cargaron " + lista.size() + " productos";
     }
 }
