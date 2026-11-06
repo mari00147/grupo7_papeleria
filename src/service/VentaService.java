@@ -1,15 +1,27 @@
 package service;
 
+import java.io.BufferedReader; 
+import java.io.BufferedWriter; 
+import java.io.File; 
+import java.io.FileNotFoundException; 
+import java.io.FileReader; 
+import java.io.FileWriter; 
+import java.io.IOException; 
 import java.util.List;
 
 import model.domain.ItemVenta;
 import model.domain.Producto;
+import model.domain.ProductoEscolar;
+import model.domain.ProductoOficina; 
 import model.domain.Venta;
 import model.structures.Pila;
 import model.domain.Pedido;
 import model.domain.PedidosPendientes;
 import model.structures.Cola;
 public class VentaService {
+
+    private static final String ARCHIVO_INVENTARIO = "data/inventario.txt"; 
+    private static final String SEPARADOR = ";"; 
 
     private final List<Producto> productos;
     private final Pila<Venta> ventasRecientes;
@@ -21,6 +33,7 @@ public class VentaService {
         this.productos = productos;
         this.ventasRecientes = new Pila<>();
         this.pedidos = pedidos;
+        cargarInventario();
         
     }  
     
@@ -143,4 +156,84 @@ public class VentaService {
         }
         return sb.toString();
 }
+
+    //lista doble y archivos 
+
+    public Producto buscarProducto(String codigo) {
+        for (Producto p : productos) {
+            if (p.getCodigo().equals(codigo)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public boolean existeProducto(String codigo) {
+        return buscarProducto(codigo) != null;
+    }
+
+    private String tipoDe(Producto p) {
+        if (p instanceof ProductoEscolar) return "ESCOLAR";
+        return "OFICINA";
+    }
+
+    private void escribirInventario() throws IOException {
+        File carpeta = new File(ARCHIVO_INVENTARIO).getParentFile();
+        if (carpeta != null) {
+            carpeta.mkdirs();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Producto p : productos) {
+            sb.append(String.join(SEPARADOR, tipoDe(p), p.getCodigo(), p.getNombre(),
+                    String.valueOf(p.getPrecio()), String.valueOf(p.getCantidadStock())))
+              .append("\n");
+        }
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ARCHIVO_INVENTARIO))) {
+            escritor.write(sb.toString());
+        }
+    }
+
+    public String guardarInventario() {
+        try {
+            escribirInventario();
+            return "Se guardaron " + productos.size() + " productos en " + ARCHIVO_INVENTARIO;
+        } catch (IOException e) {
+            return "No se pudo guardar: " + e.getMessage();
+        }
+    }
+
+    public String cargarInventario() {
+        productos.clear();
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(new File(ARCHIVO_INVENTARIO)))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] c = linea.split(SEPARADOR);
+                if (c.length != 5) {
+                    continue;
+                }
+                try {
+                    String codigo = c[1];
+                    String nombre = c[2];
+                    double precio = Double.parseDouble(c[3]);
+                    int stock = Integer.parseInt(c[4]);
+
+                    switch (c[0]) {
+                        case "OFICINA" -> productos.add(new ProductoOficina(codigo, nombre, precio, stock, "Papelería general"));
+                        case "ESCOLAR" -> productos.add(new ProductoEscolar(codigo, nombre, precio, stock, "primaria"));
+                        default -> { /* tipo desconocido: se omite la línea */ }
+                    }
+                } catch (IllegalArgumentException e) {
+                   
+                }
+            }
+        } catch (FileNotFoundException e) {
+            return "No existe " + ARCHIVO_INVENTARIO + "; se inicia con el inventario vacío";
+        } catch (IOException e) {
+            return "No se pudo leer: " + e.getMessage();
+        }
+        return "Se cargaron " + productos.size() + " productos";
+    }
 }
